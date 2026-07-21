@@ -65,8 +65,8 @@ static void FixVehicleWindowNatives()
 
 		if (!handler)
 		{
-			trace("Couldn't find 0x%08x handler to hook!\n", native.first);
-			return;
+			trace("Couldn't find 0x%016llx handler to hook!\n", native.first);
+			continue;
 		}
 
 		fx::ScriptEngine::RegisterNativeHandler(native.first, [=](fx::ScriptContext& ctx)
@@ -100,7 +100,7 @@ static void FixClockTimeOverrideNative()
 
 	if (!handler)
 	{
-		trace("Couldn't find 0x%08x handler to hook!\n", nativeHash);
+		trace("Couldn't find 0x%016llx handler to hook!\n", nativeHash);
 		return;
 	}
 
@@ -478,9 +478,9 @@ static void FixIsBitSet()
 		auto value = ctx.GetArgument<uint32_t>(0);
 		auto offset = ctx.GetArgument<int>(1);
 
-		if (offset < 32)
+		if (offset >= 0 && offset < 32)
 		{
-			result = (value & (1 << offset)) != 0;
+			result = (value & (1u << offset)) != 0;
 		}
 
 		ctx.SetResult<int>(result);
